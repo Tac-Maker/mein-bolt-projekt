@@ -81,7 +81,7 @@ export function CameraScan({ onComplete }: CameraScanProps) {
     }
 
     rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef);
+    return () => cancelAnimationFrame(rafRef.current);
   }, [hasCamera, phase, snapshot, onComplete]);
 
   const phaseProgress = (phaseTime / PHASE_DURATION) * 100;
