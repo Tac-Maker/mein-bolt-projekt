@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ArrowRight } from 'lucide-react';
 
 interface CameraScanProps {
   onComplete: () => void;
@@ -72,7 +72,6 @@ export function CameraScan({ onComplete }: CameraScanProps) {
           startTimeRef.current = performance.now();
         } else if (phase === 'foot' && !snapshot) {
           setSnapshot(true);
-          window.setTimeout(onComplete, 700);
           return;
         }
       }
@@ -82,7 +81,7 @@ export function CameraScan({ onComplete }: CameraScanProps) {
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [hasCamera, phase, snapshot, onComplete]);
+  }, [hasCamera, phase, snapshot]);
 
   const phaseProgress = (phaseTime / PHASE_DURATION) * 100;
   const clipBottom = 100 - SCAN_BOTTOM;
@@ -173,21 +172,55 @@ export function CameraScan({ onComplete }: CameraScanProps) {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
-        {snapshot ? (
-          <div className="w-16 h-16 rounded-full bg-verified flex items-center justify-center animate-fade-up">
-            <CheckCircle2 className="w-8 h-8 text-white" strokeWidth={2.5} />
-          </div>
-        ) : (
-          <ProgressRing progress={overallProgress} />
-        )}
-      </div>
       {snapshot && <div className="absolute inset-0 bg-white z-40 animate-snapshot-flash pointer-events-none" />}
-      <div className="absolute bottom-8 right-4 z-30">
-        <p className="font-mono-tight text-[10px] text-white/70">
-          {snapshot ? 'ERFASST' : `${Math.round(overallProgress)}%`}
-        </p>
-      </div>
+
+      {snapshot && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-end bg-black/85 backdrop-blur-sm animate-fade-up px-6 pb-6">
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-verified flex items-center justify-center mb-6 animate-fade-up">
+              <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2.5} />
+            </div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-verified mb-3">
+              Scan abgeschlossen
+            </p>
+            <h2 className="text-[24px] font-bold tracking-tight text-white text-center leading-tight mb-3">
+              Perfekt erfasst
+            </h2>
+            <p className="text-[13px] text-white/70 text-center leading-relaxed max-w-[280px]">
+              Dein Fuß wurde vollständig und präzise gescannt. Alle Metriken wurden
+              aus dem 3D-Modell extrahiert und sind bereit zur Auswertung.
+            </p>
+            <div className="mt-6 flex items-center gap-4">
+              <div className="flex items-center gap-1.5 bg-white/10 rounded-lg px-3 py-2">
+                <span className="font-mono-tight text-[11px] text-white/90">PUNKTE: 1.247</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-white/10 rounded-lg px-3 py-2">
+                <span className="font-mono-tight text-[11px] text-verified">GENAUIGKEIT: 99,2%</span>
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={onComplete}
+            className="no-tap-highlight w-full rounded-xl bg-signal text-white py-4 text-[15px] font-semibold tracking-tight transition-all duration-200 active:scale-[0.985] flex items-center justify-center gap-2"
+          >
+            Zu den Fußmetriken
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {!snapshot && (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
+          <ProgressRing progress={overallProgress} />
+        </div>
+      )}
+      {!snapshot && (
+        <div className="absolute bottom-8 right-4 z-30">
+          <p className="font-mono-tight text-[10px] text-white/70">
+            {`${Math.round(overallProgress)}%`}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
