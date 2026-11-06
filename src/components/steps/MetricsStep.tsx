@@ -1,4 +1,4 @@
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { CheckCircle2, ArrowRight, CircleDashed } from 'lucide-react';
 import { ThreeFootViewer } from '@/components/ThreeFootViewer';
 import { STLViewer } from '@/components/STLViewer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -14,6 +14,8 @@ interface MetricsStepProps {
 
 export function MetricsStep({ state, onNext }: MetricsStepProps) {
   const m = state.metrics;
+  const isHybrid = state.scanMode === 'hybrid';
+
   return (
     <div className="flex-1 overflow-y-auto scrollbar-hide bg-base-off">
       <div className="px-5 py-5 space-y-5">
@@ -29,7 +31,7 @@ export function MetricsStep({ state, onNext }: MetricsStepProps) {
             <ErrorBoundary fallback={<ThreeFootViewer className="w-full h-full" />}>
               <STLViewer
                 url={state.scanTarget === 'sole' ? '/models/sohle.obj' : '/models/feet.OBJ'}
-                color="#EA580C"
+                color="#9CA3AF"
                 scale={state.scanTarget === 'sole' ? 0.5 : 0.5}
                 className="w-full h-full"
               />
@@ -47,13 +49,27 @@ export function MetricsStep({ state, onNext }: MetricsStepProps) {
           </div>
         </div>
 
-        <Card className="bg-verified-bg border-verified/30">
+        <Card
+          className={
+            isHybrid
+              ? 'bg-verified-bg border-verified/30'
+              : 'bg-base-white border-hairline opacity-60'
+          }
+        >
           <div className="flex items-start gap-3">
-            <CheckCircle2 className="w-5 h-5 text-verified shrink-0 mt-0.5" />
+            {isHybrid ? (
+              <CheckCircle2 className="w-5 h-5 text-verified shrink-0 mt-0.5" />
+            ) : (
+              <CircleDashed className="w-5 h-5 text-technical shrink-0 mt-0.5" />
+            )}
             <div>
-              <p className="text-[13px] font-semibold text-carbon">Hybrid-Check bestätigt</p>
-              <p className="text-[12px] text-carbon/70 mt-1 leading-relaxed">
-                Optischer Scan deckt sich mit physikalischen Referenzwerten (Delta: +{m.deltaMm.toFixed(1)} mm)
+              <p className={`text-[13px] font-semibold ${isHybrid ? 'text-carbon' : 'text-technical'}`}>
+                Hybrid-Check bestätigt
+              </p>
+              <p className={`text-[12px] mt-1 leading-relaxed ${isHybrid ? 'text-carbon/70' : 'text-technical'}`}>
+                {isHybrid
+                  ? `Optischer Scan deckt sich mit physikalischen Referenzwerten (Delta: +${m.deltaMm.toFixed(1)} mm)`
+                  : 'Nicht verfügbar im reinen Scan-Modus. Wechsle zu Hybrid Scan mit Abdruck-Platte für den physikalischen Referenzabgleich.'}
               </p>
             </div>
           </div>

@@ -8,6 +8,8 @@ export type ScanMethod = 'iphone' | 'android';
 
 export type ScanTarget = 'foot' | 'sole';
 
+export type ScanMode = 'pure' | 'hybrid';
+
 export type PrinterType = 'Bambu Lab X1C' | 'Bambu Lab P1S' | 'Prusa MK4' | 'Ender 3';
 
 export type ShoeModel = 'PureSlide' | 'UrbanFlow';
@@ -35,6 +37,7 @@ export interface AppState {
   started: boolean;
   scanMethod: ScanMethod | null;
   scanTarget: ScanTarget;
+  scanMode: ScanMode;
   hardware: HardwareProfile;
   printer: PrinterType;
   metrics: FootMetrics;

@@ -9,7 +9,7 @@ import { CustomizerStep } from '@/components/steps/CustomizerStep';
 import { PrintabilityStep } from '@/components/steps/PrintabilityStep';
 import { ExportStep } from '@/components/steps/ExportStep';
 import { useAppMachine } from '@/useAppMachine';
-import type { HardwareProfile, PrinterType, CustomizerState, ScanMethod } from '@/types';
+import type { HardwareProfile, PrinterType, CustomizerState, ScanMethod, ScanMode } from '@/types';
 
 function App() {
   const [state, dispatch] = useAppMachine();
@@ -20,6 +20,7 @@ function App() {
   const startSoleScan = useCallback(() => dispatch({ type: 'START_SOLE_SCAN' }), [dispatch]);
   const setHardware = useCallback((h: HardwareProfile) => dispatch({ type: 'SET_HARDWARE', hardware: h }), [dispatch]);
   const setPrinter = useCallback((p: PrinterType) => dispatch({ type: 'SET_PRINTER', printer: p }), [dispatch]);
+  const setScanMode = useCallback((m: ScanMode) => dispatch({ type: 'SET_SCAN_MODE', scanMode: m }), [dispatch]);
   const setCustomizer = useCallback((patch: Partial<CustomizerState>) => dispatch({ type: 'SET_CUSTOMIZER', patch }), [dispatch]);
   const afterMetrics = useCallback(
     () => dispatch({ type: 'GOTO', step: state.scanTarget === 'sole' ? 4 : 3 }),
@@ -42,6 +43,7 @@ function App() {
           state={state}
           setHardware={setHardware}
           setPrinter={setPrinter}
+          setScanMode={setScanMode}
           onNext={next}
           onSoleScan={startSoleScan}
         />

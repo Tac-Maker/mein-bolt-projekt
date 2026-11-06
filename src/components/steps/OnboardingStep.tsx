@@ -1,20 +1,21 @@
 import { useState } from 'react';
-import { Check, CreditCard, Layers, Clock, ChevronDown, Zap } from 'lucide-react';
+import { Check, CreditCard, Layers, Clock, ChevronDown, Zap, ScanLine, Footprints } from 'lucide-react';
 import { Card, SectionLabel } from '@/components/ui/Card';
 import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { PrimaryButton } from '@/components/ui/Button';
-import type { AppState, HardwareProfile, PrinterType } from '@/types';
+import type { AppState, HardwareProfile, PrinterType, ScanMode } from '@/types';
 import { PRINTER_OPTIONS } from '@/types';
 
 interface OnboardingStepProps {
   state: AppState;
   setHardware: (h: HardwareProfile) => void;
   setPrinter: (p: PrinterType) => void;
+  setScanMode: (m: ScanMode) => void;
   onNext: () => void;
   onSoleScan: () => void;
 }
 
-export function OnboardingStep({ state, setHardware, setPrinter, onNext, onSoleScan }: OnboardingStepProps) {
+export function OnboardingStep({ state, setHardware, setPrinter, setScanMode, onNext, onSoleScan }: OnboardingStepProps) {
   const [printerOpen, setPrinterOpen] = useState(false);
 
   const checklistItems = [
@@ -53,6 +54,40 @@ export function OnboardingStep({ state, setHardware, setPrinter, onNext, onSoleS
             ))}
           </div>
         </Card>
+
+        <div>
+          <SectionLabel>Scan-Modus</SectionLabel>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setScanMode('pure')}
+              className={`no-tap-highlight rounded-xl border p-3 text-left transition-all duration-200 ${
+                state.scanMode === 'pure'
+                  ? 'border-signal bg-signal/[0.04] ring-1 ring-signal'
+                  : 'border-hairline bg-base-white'
+              }`}
+            >
+              <ScanLine className={`w-5 h-5 mb-2 ${state.scanMode === 'pure' ? 'text-signal' : 'text-technical'}`} />
+              <p className="text-[13px] font-semibold text-carbon">Reiner Scan</p>
+              <p className="text-[11px] text-technical mt-1 leading-relaxed">
+                Nur optische Erfassung ohne Abdruck-Platte.
+              </p>
+            </button>
+            <button
+              onClick={() => setScanMode('hybrid')}
+              className={`no-tap-highlight rounded-xl border p-3 text-left transition-all duration-200 ${
+                state.scanMode === 'hybrid'
+                  ? 'border-signal bg-signal/[0.04] ring-1 ring-signal'
+                  : 'border-hairline bg-base-white'
+              }`}
+            >
+              <Footprints className={`w-5 h-5 mb-2 ${state.scanMode === 'hybrid' ? 'text-signal' : 'text-technical'}`} />
+              <p className="text-[13px] font-semibold text-carbon">Hybrid Scan</p>
+              <p className="text-[11px] text-technical mt-1 leading-relaxed">
+                Scan mit Abdruck-Platte für höhere Präzision.
+              </p>
+            </button>
+          </div>
+        </div>
 
         <div>
           <SectionLabel>Hardware-Profil</SectionLabel>

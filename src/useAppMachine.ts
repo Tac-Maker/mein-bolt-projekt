@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import type { AppState, StepIndex, ScanMethod, ScanTarget } from '@/types';
+import type { AppState, StepIndex, ScanMethod, ScanTarget, ScanMode } from '@/types';
 
 type Action =
   | { type: 'GOTO'; step: StepIndex }
@@ -10,6 +10,7 @@ type Action =
   | { type: 'START_SOLE_SCAN' }
   | { type: 'SET_HARDWARE'; hardware: AppState['hardware'] }
   | { type: 'SET_PRINTER'; printer: AppState['printer'] }
+  | { type: 'SET_SCAN_MODE'; scanMode: ScanMode }
   | { type: 'SET_CUSTOMIZER'; patch: Partial<AppState['customizer']> };
 
 const initialState: AppState = {
@@ -17,6 +18,7 @@ const initialState: AppState = {
   started: false,
   scanMethod: null,
   scanTarget: 'foot' as ScanTarget,
+  scanMode: 'pure' as ScanMode,
   hardware: 'maker',
   printer: 'Bambu Lab X1C',
   metrics: {
@@ -53,6 +55,8 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, hardware: action.hardware };
     case 'SET_PRINTER':
       return { ...state, printer: action.printer };
+    case 'SET_SCAN_MODE':
+      return { ...state, scanMode: action.scanMode };
     case 'SET_CUSTOMIZER':
       return { ...state, customizer: { ...state.customizer, ...action.patch } };
     default:
