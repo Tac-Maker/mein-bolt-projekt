@@ -176,14 +176,13 @@ export function CameraScan({ onComplete }: CameraScanProps) {
 
       {snapshot && (
         <div className="absolute inset-0 z-50 flex flex-col bg-black animate-fade-up overflow-hidden">
-          {/* Foot image with green grid dots — upper third */}
+          {/* Foot image with raster overlay — upper third */}
           <div className="relative h-1/3 w-full overflow-hidden">
             <img
-              src="/images/Fuss.png"
+              src="/images/Fuss-raster.png"
               alt="Gescanntes Fußmodell mit Messpunkten"
               className="absolute inset-0 w-full h-full object-contain opacity-90"
             />
-            <GreenGridOverlay />
           </div>
 
           {/* Success content — lower two thirds */}
@@ -266,28 +265,4 @@ function ProgressRing({ progress }: { progress: number }) {
   );
 }
 
-function GreenGridOverlay() {
-  const dots: { left: string; top: string; delay: string }[] = [];
-  const cols = 11;
-  const rows = 7;
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      dots.push({
-        left: `${(c / (cols - 1)) * 100}%`,
-        top: `${(r / (rows - 1)) * 100}%`,
-        delay: `${(r * cols + c) * 0.012}s`,
-      });
-    }
-  }
-  return (
-    <div className="absolute inset-0 pointer-events-none">
-      {dots.map((d, i) => (
-        <div
-          key={i}
-          className="absolute w-1 h-1 rounded-full bg-verified shadow-[0_0_4px_rgba(22,163,74,0.7)] animate-mesh-pulse"
-          style={{ left: d.left, top: d.top, animationDelay: d.delay }}
-        />
-      ))}
-    </div>
-  );
-}
+
