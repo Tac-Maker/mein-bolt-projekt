@@ -175,37 +175,50 @@ export function CameraScan({ onComplete }: CameraScanProps) {
       {snapshot && <div className="absolute inset-0 bg-white z-40 animate-snapshot-flash pointer-events-none" />}
 
       {snapshot && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-end bg-black/85 backdrop-blur-sm animate-fade-up px-6 pb-6">
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <div className="w-20 h-20 rounded-full bg-verified flex items-center justify-center mb-6 animate-fade-up">
-              <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2.5} />
-            </div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-verified mb-3">
-              Scan abgeschlossen
-            </p>
-            <h2 className="text-[24px] font-bold tracking-tight text-white text-center leading-tight mb-3">
-              Perfekt erfasst
-            </h2>
-            <p className="text-[13px] text-white/70 text-center leading-relaxed max-w-[280px]">
-              Dein Fuß wurde vollständig und präzise gescannt. Alle Metriken wurden
-              aus dem 3D-Modell extrahiert und sind bereit zur Auswertung.
-            </p>
-            <div className="mt-6 flex items-center gap-4">
-              <div className="flex items-center gap-1.5 bg-white/10 rounded-lg px-3 py-2">
-                <span className="font-mono-tight text-[11px] text-white/90">PUNKTE: 1.247</span>
-              </div>
-              <div className="flex items-center gap-1.5 bg-white/10 rounded-lg px-3 py-2">
-                <span className="font-mono-tight text-[11px] text-verified">GENAUIGKEIT: 99,2%</span>
-              </div>
-            </div>
+        <div className="absolute inset-0 z-50 flex flex-col bg-black animate-fade-up overflow-hidden">
+          {/* Foot image with green grid dots — upper third */}
+          <div className="relative h-1/3 w-full overflow-hidden">
+            <img
+              src="/images/Fuss.png"
+              alt="Gescanntes Fußmodell mit Messpunkten"
+              className="absolute inset-0 w-full h-full object-contain opacity-90"
+            />
+            <GreenGridOverlay />
           </div>
-          <button
-            onClick={onComplete}
-            className="no-tap-highlight w-full rounded-xl bg-signal text-white py-4 text-[15px] font-semibold tracking-tight transition-all duration-200 active:scale-[0.985] flex items-center justify-center gap-2"
-          >
-            Zu den Fußmetriken
-            <ArrowRight className="w-4 h-4" />
-          </button>
+
+          {/* Success content — lower two thirds */}
+          <div className="flex-1 flex flex-col items-center justify-between px-6 pt-6 pb-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-verified flex items-center justify-center mb-5 animate-fade-up">
+                <CheckCircle2 className="w-8 h-8 text-white" strokeWidth={2.5} />
+              </div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-verified mb-3">
+                Scan abgeschlossen
+              </p>
+              <h2 className="text-[24px] font-bold tracking-tight text-white text-center leading-tight mb-3">
+                Perfekt erfasst
+              </h2>
+              <p className="text-[13px] text-white/70 text-center leading-relaxed max-w-[280px]">
+                Dein Fuß wurde vollständig und präzise gescannt. Alle Metriken wurden
+                aus dem 3D-Modell extrahiert und sind bereit zur Auswertung.
+              </p>
+              <div className="mt-5 flex items-center gap-4">
+                <div className="flex items-center gap-1.5 bg-white/10 rounded-lg px-3 py-2">
+                  <span className="font-mono-tight text-[11px] text-white/90">MESSPUNKTE: 1.247</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-white/10 rounded-lg px-3 py-2">
+                  <span className="font-mono-tight text-[11px] text-verified">GENAUIGKEIT: 99,2%</span>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={onComplete}
+              className="no-tap-highlight w-full rounded-xl bg-signal text-white py-4 text-[15px] font-semibold tracking-tight transition-all duration-200 active:scale-[0.985] flex items-center justify-center gap-2"
+            >
+              Zu den Fußmetriken
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
 
@@ -249,6 +262,32 @@ function ProgressRing({ progress }: { progress: number }) {
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="font-mono-tight text-[11px] font-semibold text-white">{Math.round(progress)}</span>
       </div>
+    </div>
+  );
+}
+
+function GreenGridOverlay() {
+  const dots: { left: string; top: string; delay: string }[] = [];
+  const cols = 11;
+  const rows = 7;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      dots.push({
+        left: `${(c / (cols - 1)) * 100}%`,
+        top: `${(r / (rows - 1)) * 100}%`,
+        delay: `${(r * cols + c) * 0.012}s`,
+      });
+    }
+  }
+  return (
+    <div className="absolute inset-0 pointer-events-none">
+      {dots.map((d, i) => (
+        <div
+          key={i}
+          className="absolute w-1 h-1 rounded-full bg-verified shadow-[0_0_4px_rgba(22,163,74,0.7)] animate-mesh-pulse"
+          style={{ left: d.left, top: d.top, animationDelay: d.delay }}
+        />
+      ))}
     </div>
   );
 }

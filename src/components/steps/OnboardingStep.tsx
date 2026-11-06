@@ -15,12 +15,7 @@ interface OnboardingStepProps {
 }
 
 export function OnboardingStep({ state, setHardware, setPrinter, onNext, onSoleScan }: OnboardingStepProps) {
-  const [checks, setChecks] = useState<boolean[]>([false, false, false]);
   const [printerOpen, setPrinterOpen] = useState(false);
-
-  const toggleCheck = (i: number) => {
-    setChecks((prev) => prev.map((c, idx) => (idx === i ? !c : c)));
-  };
 
   const checklistItems = [
     { icon: CreditCard, label: 'Standard-Kredit-/Referenzkarte bereithalten' },
@@ -45,25 +40,16 @@ export function OnboardingStep({ state, setHardware, setPrinter, onNext, onSoleS
           <SectionLabel>Checkliste</SectionLabel>
           <div className="space-y-2.5">
             {checklistItems.map((item, i) => (
-              <button
+              <div
                 key={i}
-                onClick={() => toggleCheck(i)}
-                className="no-tap-highlight w-full flex items-center gap-3 text-left group"
+                className="w-full flex items-center gap-3"
               >
-                <div
-                  className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-200 shrink-0 ${
-                    checks[i]
-                      ? 'bg-verified border-verified'
-                      : 'border-hairline group-hover:border-carbon'
-                  }`}
-                >
-                  {checks[i] && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
-                </div>
+                <div className="w-5 h-5 rounded-md border border-hairline flex items-center justify-center shrink-0" />
                 <item.icon className="w-4 h-4 text-technical shrink-0" />
-                <span className={`text-[13px] leading-snug ${checks[i] ? 'text-carbon' : 'text-technical'}`}>
+                <span className="text-[13px] leading-snug text-technical">
                   {item.label}
                 </span>
-              </button>
+              </div>
             ))}
           </div>
         </Card>
