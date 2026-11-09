@@ -22,6 +22,7 @@ export function SlicerStep({ onNext }: SlicerStepProps) {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
+    if (done) return;
     startTimeRef.current = performance.now();
 
     function tick() {
@@ -33,7 +34,7 @@ export function SlicerStep({ onNext }: SlicerStepProps) {
         if (phase === 'pre') {
           setPhase('overlay');
           startTimeRef.current = performance.now();
-        } else if (phase === 'overlay' && !done) {
+        } else if (phase === 'overlay') {
           setDone(true);
           return;
         }
@@ -52,7 +53,10 @@ export function SlicerStep({ onNext }: SlicerStepProps) {
   let overlayClipTop: number;
   let overlayClipBottom: number;
 
-  if (phase === 'pre') {
+  if (done) {
+    lineAbs = SCAN_TOP;
+    overlayClipTop = 0; overlayClipBottom = 0;
+  } else if (phase === 'pre') {
     lineAbs = SCAN_TOP + (phaseProgress / 100) * SCAN_RANGE;
     overlayClipTop = 100; overlayClipBottom = 0;
   } else {
