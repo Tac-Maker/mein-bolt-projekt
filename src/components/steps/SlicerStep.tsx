@@ -7,8 +7,8 @@ interface SlicerStepProps {
   onNext: () => void;
 }
 
-const SCAN_TOP = 33;
-const SCAN_BOTTOM = 66;
+const SCAN_TOP = 0;
+const SCAN_BOTTOM = 100;
 const SCAN_RANGE = SCAN_BOTTOM - SCAN_TOP;
 const PHASE_DURATION = 4;
 
