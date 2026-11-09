@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 
+export type ScanType = 'fuss' | 'sohle';
+
 interface CameraScanProps {
   onComplete: () => void;
+  scanType?: ScanType;
 }
 
 const SCAN_TOP = 33;
@@ -12,7 +15,20 @@ const PHASE_DURATION = 4; // seconds per phase
 
 type Phase = 'pre' | 'wire' | 'foot';
 
-export function CameraScan({ onComplete }: CameraScanProps) {
+const IMAGES: Record<ScanType, { wire: string; foot: string; raster: string }> = {
+  fuss: {
+    wire: '/images/Fuss-wire.png',
+    foot: '/images/Fuss.png',
+    raster: '/images/Fuss-raster.png',
+  },
+  sohle: {
+    wire: '/images/sohle-wire.png',
+    foot: '/images/sohle.png',
+    raster: '/images/sohle.png',
+  },
+};
+
+export function CameraScan({ onComplete, scanType = 'fuss' }: CameraScanProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number>(0);
@@ -21,6 +37,9 @@ export function CameraScan({ onComplete }: CameraScanProps) {
   const [phase, setPhase] = useState<Phase>('pre');
   const [phaseTime, setPhaseTime] = useState(0);
   const [snapshot, setSnapshot] = useState(false);
+
+  const imgs = IMAGES[scanType];
+  const isSole = scanType === 'sohle';
 
   useEffect(() => {
     let cancelled = false;
@@ -93,17 +112,14 @@ export function CameraScan({ onComplete }: CameraScanProps) {
   let footClipBottom: number;
 
   if (phase === 'pre') {
-    // Line: top -> bottom, nothing revealed yet
     lineAbs = SCAN_TOP + (phaseProgress / 100) * SCAN_RANGE;
     wireClipTop = 100; wireClipBottom = 0;
     footClipTop = 100; footClipBottom = 0;
   } else if (phase === 'wire') {
-    // Line: bottom -> top, wire revealed below the line
     lineAbs = SCAN_BOTTOM - (phaseProgress / 100) * SCAN_RANGE;
     wireClipTop = lineAbs; wireClipBottom = clipBottom;
     footClipTop = 100; footClipBottom = 0;
   } else {
-    // Line: top -> bottom, foot revealed above the line, wire stays fully visible
     lineAbs = SCAN_TOP + (phaseProgress / 100) * SCAN_RANGE;
     wireClipTop = SCAN_TOP; wireClipBottom = clipBottom;
     footClipTop = SCAN_TOP; footClipBottom = 100 - lineAbs;
@@ -128,8 +144,8 @@ export function CameraScan({ onComplete }: CameraScanProps) {
 
       {/* Wireframe layer */}
       <img
-        src="/images/Fuss-wire.png"
-        alt="Fuß als Wireframe"
+        src={imgs.wire}
+        alt={isSole ? 'Sohle als Wireframe' : 'Fuß als Wireframe'}
         className="absolute inset-0 z-10 w-full h-full object-contain"
         style={{
           clipPath: `inset(${wireClipTop}% 0 ${wireClipBottom}% 0)`,
@@ -140,8 +156,8 @@ export function CameraScan({ onComplete }: CameraScanProps) {
 
       {/* Normal foot layer */}
       <img
-        src="/images/Fuss.png"
-        alt="Gescanntes Fußmodell"
+        src={imgs.foot}
+        alt={isSole ? 'Gescanntes Sohlenmodell' : 'Gescanntes Fußmodell'}
         className="absolute inset-0 z-10 w-full h-full object-contain"
         style={{
           clipPath: `inset(${footClipTop}% 0 ${footClipBottom}% 0)`,
@@ -176,11 +192,11 @@ export function CameraScan({ onComplete }: CameraScanProps) {
 
       {snapshot && (
         <div className="absolute inset-0 z-50 flex flex-col bg-black animate-fade-up overflow-hidden">
-          {/* Foot image with raster overlay — upper third */}
+          {/* Image with raster overlay — upper third */}
           <div className="relative h-1/3 w-full overflow-hidden">
             <img
-              src="/images/Fuss-raster.png"
-              alt="Gescanntes Fußmodell mit Messpunkten"
+              src={imgs.raster}
+              alt={isSole ? 'Gescanntes Sohlenmodell mit Messpunkten' : 'Gescanntes Fußmodell mit Messpunkten'}
               className="absolute inset-0 w-full h-full object-contain opacity-90"
             />
           </div>
@@ -198,8 +214,9 @@ export function CameraScan({ onComplete }: CameraScanProps) {
                 Perfekt erfasst
               </h2>
               <p className="text-[13px] text-white/70 text-center leading-relaxed max-w-[280px]">
-                Dein Fuß wurde vollständig und präzise gescannt. Alle Metriken wurden
-                aus dem 3D-Modell extrahiert und sind bereit zur Auswertung.
+                {isSole
+                  ? 'Deine Sohle wurde vollständig und präzise gescannt. Alle Metriken wurden aus dem 3D-Modell extrahiert und sind bereit zur Auswertung.'
+                  : 'Dein Fuß wurde vollständig und präzise gescannt. Alle Metriken wurden aus dem 3D-Modell extrahiert und sind bereit zur Auswertung.'}
               </p>
               <div className="mt-5 flex items-center gap-4">
                 <div className="flex items-center gap-1.5 bg-white/10 rounded-lg px-3 py-2">
@@ -214,7 +231,7 @@ export function CameraScan({ onComplete }: CameraScanProps) {
               onClick={onComplete}
               className="no-tap-highlight w-full rounded-xl bg-signal text-white py-4 text-[15px] font-semibold tracking-tight transition-all duration-200 active:scale-[0.985] flex items-center justify-center gap-2"
             >
-              Zu den Fußmetriken
+              {isSole ? 'Zu den Sohlenmetriken' : 'Zu den Fußmetriken'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -264,5 +281,3 @@ function ProgressRing({ progress }: { progress: number }) {
     </div>
   );
 }
-
-

@@ -1,6 +1,6 @@
-export type StepId = 'onboarding' | 'scan' | 'metrics' | 'customizer' | 'printability' | 'export';
+export type StepId = 'onboarding' | 'scan' | 'metrics' | 'customizer' | 'printability' | 'slicer' | 'export';
 
-export type StepIndex = 0 | 1 | 2 | 3 | 4 | 5;
+export type StepIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export type HardwareProfile = 'maker' | 'access';
 
@@ -50,6 +50,7 @@ export const STEP_IDS: StepId[] = [
   'metrics',
   'customizer',
   'printability',
+  'slicer',
   'export',
 ];
 
@@ -59,6 +60,7 @@ export const STEP_LABELS: string[] = [
   'Metriken',
   'Konfigurator',
   'Druckbarkeit',
+  'Slicer',
   'Export',
 ];
 

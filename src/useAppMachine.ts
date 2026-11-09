@@ -42,7 +42,7 @@ function reducer(state: AppState, action: Action): AppState {
     case 'GOTO':
       return { ...state, step: action.step };
     case 'NEXT':
-      return { ...state, step: Math.min(5, state.step + 1) as StepIndex };
+      return { ...state, step: Math.min(6, state.step + 1) as StepIndex };
     case 'PREV':
       return { ...state, step: Math.max(0, state.step - 1) as StepIndex };
     case 'RESET':

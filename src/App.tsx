@@ -7,6 +7,7 @@ import { ScanStep } from '@/components/steps/ScanStep';
 import { MetricsStep } from '@/components/steps/MetricsStep';
 import { CustomizerStep } from '@/components/steps/CustomizerStep';
 import { PrintabilityStep } from '@/components/steps/PrintabilityStep';
+import { SlicerStep } from '@/components/steps/SlicerStep';
 import { ExportStep } from '@/components/steps/ExportStep';
 import { useAppMachine } from '@/useAppMachine';
 import type { HardwareProfile, PrinterType, CustomizerState, ScanMethod, ScanMode } from '@/types';
@@ -48,13 +49,14 @@ function App() {
           onSoleScan={startSoleScan}
         />
       )}
-      {state.step === 1 && <ScanStep onComplete={next} />}
+      {state.step === 1 && <ScanStep onComplete={next} scanTarget={state.scanTarget} />}
       {state.step === 2 && <MetricsStep state={state} onNext={afterMetrics} />}
       {state.step === 3 && (
         <CustomizerStep state={state} setCustomizer={setCustomizer} onNext={next} />
       )}
       {state.step === 4 && <PrintabilityStep state={state} onNext={next} />}
-      {state.step === 5 && <ExportStep state={state} onReset={reset} />}
+      {state.step === 5 && <SlicerStep onNext={next} />}
+      {state.step === 6 && <ExportStep state={state} onReset={reset} />}
     </IPhoneFrame>
   );
 }
