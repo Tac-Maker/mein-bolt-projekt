@@ -55,7 +55,7 @@ function App() {
         <CustomizerStep state={state} setCustomizer={setCustomizer} onNext={next} />
       )}
       {state.step === 4 && <PrintabilityStep state={state} onNext={next} />}
-      {state.step === 5 && <SlicerStep onNext={next} />}
+      {state.step === 5 && <SlicerStep onNext={next} scanTarget={state.scanTarget} />}
       {state.step === 6 && <ExportStep state={state} onReset={reset} />}
     </IPhoneFrame>
   );
