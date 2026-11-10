@@ -23,7 +23,6 @@ const IMAGES: Record<ScanTarget, { base: string; overlay: string }> = {
 
 export function SlicerStep({ onNext, scanTarget }: SlicerStepProps) {
   const imgs = IMAGES[scanTarget];
-  const isFoot = scanTarget === 'foot';
 
   const startTimeRef = useRef<number>(0);
   const rafRef = useRef<number>(0);
@@ -118,23 +117,21 @@ export function SlicerStep({ onNext, scanTarget }: SlicerStepProps) {
             </div>
           )}
 
-          {/* Foot: status text */}
-          {isFoot && (
-            <div className="absolute top-3 left-3 z-30">
-              <span className="font-mono-tight text-[10px] text-white/90 bg-black/40 backdrop-blur-sm rounded-lg px-2.5 py-1.5">
-                SLICER AKTIV
-              </span>
-            </div>
-          )}
+          {/* Status badge */}
+          <div className="absolute top-3 left-3 z-30">
+            <span className="font-mono-tight text-[10px] text-white/90 bg-black/40 backdrop-blur-sm rounded-lg px-2.5 py-1.5">
+              SLICER AKTIV
+            </span>
+          </div>
 
-          {/* Foot: progress ring */}
-          {isFoot && !done && (
+          {/* Progress ring */}
+          {!done && (
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30">
               <ProgressRing progress={overallProgress} />
             </div>
           )}
-          {/* Foot: progress percent */}
-          {isFoot && !done && (
+          {/* Progress percent */}
+          {!done && (
             <div className="absolute bottom-4 right-3 z-30">
               <p className="font-mono-tight text-[10px] text-white/70">
                 {`${Math.round(overallProgress)}%`}
@@ -143,12 +140,10 @@ export function SlicerStep({ onNext, scanTarget }: SlicerStepProps) {
           )}
         </div>
 
-        {/* Foot: status text line */}
-        {isFoot && (
-          <p className="text-[13px] text-technical text-center -mt-2">
-            Slicer aktiv. 3D Druckdatei wird generiert.
-          </p>
-        )}
+        {/* Status text line */}
+        <p className="text-[13px] text-technical text-center -mt-2">
+          Slicer aktiv. 3D Druckdatei wird generiert.
+        </p>
 
         {/* Scandaten */}
         <Card className="bg-base-white">
